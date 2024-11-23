@@ -55,6 +55,9 @@ jobs:
         wget https://raw.githubusercontent.com/pfgq/Kernel_driver_hack/refs/heads/main/kernel/setup.sh
         chmod 755 setup.sh
         ./setup.sh
+        sed -i '1i KBUILD_CFLAGS += -w' Makefile
+        grep 'KBUILD_CFLAGS += -w' Makefile
+
                      
     - name: 开启lxc和docker配置
       if: env.ENABLE_LXC_DOCKER == 'true'
