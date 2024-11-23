@@ -107,11 +107,11 @@ jobs:
         export PATH=$GITHUB_WORKSPACE/kernel_workspace/clang-aosp/clang-r416183b/bin:$PATH
         export KBUILD_BUILD_HOST=17
         export KBUILD_BUILD_USER=HyperPower
-        make -j$(nproc --all) O=out ARCH=arm64 ${{ env.KERNEL_CONFIG }}
+        make -j$(nproc --all) ARCH=arm64 ${{ env.KERNEL_CONFIG }}
         if [ ${{env.LLVM_CONFIG}}=y ]; then
-        make -j$(nproc --all) CC="ccache clang" CXX=clang++ O=out ARCH=arm64 CLANG_TRIPLE="aarch64-linux-gnu-" CROSS_COMPILE="aarch64-linux-gnu-" CROSS_COMPILE_ARM32="arm-linux-gnueabi-" LLVM=1 LLVM_IAS=1
+        make -j$(nproc --all) CC="ccache clang" CXX=clang++ ARCH=arm64 CLANG_TRIPLE="aarch64-linux-gnu-" CROSS_COMPILE="aarch64-linux-gnu-" CROSS_COMPILE_ARM32="arm-linux-gnueabi-" LLVM=1 LLVM_IAS=1
         else
-        make -j$(nproc --all) CC="ccache clang" CXX=clang++ O=out ARCH=arm64 CLANG_TRIPLE="aarch64-linux-gnu-" CROSS_COMPILE="aarch64-linux-gnu-" CROSS_COMPILE_ARM32="arm-linux-gnueabi-"
+        make -j$(nproc --all) CC="ccache clang" CXX=clang++ ARCH=arm64 CLANG_TRIPLE="aarch64-linux-gnu-" CROSS_COMPILE="aarch64-linux-gnu-" CROSS_COMPILE_ARM32="arm-linux-gnueabi-"
         fi
                 
     - name: 准备打包内核
@@ -121,15 +121,15 @@ jobs:
         sed -i 's/do.devicecheck=1/do.devicecheck=0/g' AnyKernel3/anykernel.sh
         sed -i 's!block=/dev/block/platform/omap/omap_hsmmc.0/by-name/boot;!block=auto;!g' AnyKernel3/anykernel.sh
         sed -i 's/is_slot_device=1;/is_slot_device=auto;/g' AnyKernel3/anykernel.sh        
-        cp android-kernel/out/arch/arm64/boot/${{ env.KERNEL_IMAGE_NAME }} AnyKernel3/
+        cp android-kernel/arch/arm64/boot/${{ env.KERNEL_IMAGE_NAME }} AnyKernel3/
         if [ ${{ env.NEED_DTBO }} = true ]; then
             echo "NEED=true" >> $GITHUB_ENV
-            if [ -f android-kernel/out/arch/arm64/boot/dtbo.img ]; then
+            if [ -f android-kernel/arch/arm64/boot/dtbo.img ]; then
                 echo "DTBO_EXIST=true" >> $GITHUB_ENV           
             fi
         fi        
         if [ ${{ env.DTBO_EXIST }} = true ]; then
-            cp android-kernel/out/arch/arm64/boot/dtbo.img AnyKernel3/
+            cp android-kernelarch/arm64/boot/dtbo.img AnyKernel3/
         fi  
         rm -rf AnyKernel3/.git* AnyKernel3/README.md
         rm -rf AnyKernel3/ramdisk AnyKernel3/modules AnyKernel3/patch
@@ -145,5 +145,5 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: dtbo-image
-        path: kernel_workspace/android-kernel/out/arch/arm64/boot/dtbo.img
+        path: kernel_workspace/android-kernel/arch/arm64/boot/dtbo.img
           
