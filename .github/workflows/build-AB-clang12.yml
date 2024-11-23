@@ -51,7 +51,7 @@ jobs:
         
     - name: test
       run: |
-        cd $GITHUB_WORKSPACE/kernel_workspace
+        cd $GITHUB_WORKSPACE/kernel_workspace/android-kernel
         wget https://raw.githubusercontent.com/Jiang-Night/Kernel_driver_hack/refs/heads/main/kernel/setup.sh
         chmod 755 setup.sh
         ./setup.sh
