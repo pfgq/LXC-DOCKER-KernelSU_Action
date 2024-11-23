@@ -55,8 +55,8 @@ jobs:
         wget https://raw.githubusercontent.com/pfgq/Kernel_driver_hack/refs/heads/main/kernel/setup.sh
         chmod 755 setup.sh
         ./setup.sh
-        sed -i '1i KBUILD_CFLAGS += -w' Makefile
-        grep 'KBUILD_CFLAGS += -w' Makefile
+        sed -i '/-std=gnu89/ s/$/ \\/' Makefile
+        sed -i '/-std=gnu89/ a \t-Wno-strict-aliasing -w' Makefile
 
                      
     - name: 开启lxc和docker配置
