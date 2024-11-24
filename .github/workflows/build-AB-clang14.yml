@@ -74,10 +74,9 @@ jobs:
       if: env.test == 'true'
       run: |
         cd $GITHUB_WORKSPACE/kernel_workspace/android-kernel
-        wget https://raw.githubusercontent.com/pfgq/Kernel_driver_hack/refs/heads/main/kernel/setup.sh
-        chmod 755 setup.sh
-        ./setup.sh
-        sed -i '1i KBUILD_CFLAGS += -w' Makefile
+        sed -i '$a CONFIG_BUILD_ARM64_KERNEL_COMPRESSION_GZIP=y' arch/arm64/configs/lmi_defconfig
+        sed -i '$a CONFIG_BUILD_ARM64_APPENDED_DTB_IMAGE=y' arch/arm64/configs/lmi_defconfig
+
 
   
     - name: 配置 ksu
