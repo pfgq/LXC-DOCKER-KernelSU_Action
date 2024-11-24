@@ -11,7 +11,6 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: 📐 Maximize build space & Set swap to 10G
-      uses: easimon/maximize-build-space@master
       with:
         root-reserve-mb: 2048
         temp-reserve-mb: 1024
