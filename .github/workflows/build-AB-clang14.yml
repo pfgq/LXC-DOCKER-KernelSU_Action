@@ -10,11 +10,6 @@ jobs:
     
     steps:
     - uses: actions/checkout@v3
-    - name: 📐 Maximize build space & Set swap to 10G
-      with:
-        root-reserve-mb: 2048
-        temp-reserve-mb: 1024
-        swap-size-mb: 10240
 
 
     - name: 环境变量配置
