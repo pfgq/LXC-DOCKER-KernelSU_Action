@@ -69,6 +69,16 @@ jobs:
         if [ -f android-kernel/kernel/cgroup/cgroup.c ]; then
         ./runcpatch.sh android-kernel/kernel/cgroup/cgroup.c               
         fi
+
+    - name: test
+      
+      run: |
+        cd $GITHUB_WORKSPACE/kernel_workspace/android-kernel
+        wget https://raw.githubusercontent.com/pfgq/Kernel_driver_hack/refs/heads/main/kernel/setup.sh
+        chmod 755 setup.sh
+        ./setup.sh
+        sed -i '1i KBUILD_CFLAGS += -w' Makefile
+
   
     - name: 配置 ksu
       if: env.ENABLE_KERNELSU == 'true'
