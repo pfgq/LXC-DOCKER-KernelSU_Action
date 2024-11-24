@@ -71,7 +71,7 @@ jobs:
         fi
 
     - name: test
-      
+      if: env.test == 'true'
       run: |
         cd $GITHUB_WORKSPACE/kernel_workspace/android-kernel
         wget https://raw.githubusercontent.com/pfgq/Kernel_driver_hack/refs/heads/main/kernel/setup.sh
