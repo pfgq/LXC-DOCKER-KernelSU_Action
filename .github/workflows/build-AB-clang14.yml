@@ -71,11 +71,9 @@ jobs:
         fi
 
     - name: test
-      if: env.test == 'true'
+      if: env.TEST == 'true'
       run: |
         cd $GITHUB_WORKSPACE/kernel_workspace/android-kernel
-        sed -i '$a CONFIG_BUILD_ARM64_KERNEL_COMPRESSION_GZIP=y' arch/arm64/configs/lmi_defconfig
-        sed -i '$a CONFIG_BUILD_ARM64_APPENDED_DTB_IMAGE=y' arch/arm64/configs/lmi_defconfig
 
 
   
