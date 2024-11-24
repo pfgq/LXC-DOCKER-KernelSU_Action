@@ -8,6 +8,21 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event.repository.owner.id == github.event.sender.id
     
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: 📐 Maximize build space & Set swap to 10G
+      uses: easimon/maximize-build-space@master
+      with:
+        root-reserve-mb: 2048
+        temp-reserve-mb: 1024
+        swap-size-mb: 10240
+        remove-dotnet: 'true'
+        remove-android: 'true'
+        remove-haskell: 'true'
+        remove-codeql: 'true'
+        remove-docker-images: 'true'
+
     - name: 环境变量配置
       run: |
         cat config.env | grep KERNEL_SOURCE= >> $GITHUB_ENV
@@ -32,9 +47,9 @@ jobs:
     - name: 切换python2.7
       if: env.SWITCH_PYTHON == 'true'
       run: |
-       sudo rm -f /usr/bin/python
-       sudo ln -s /usr/bin/python2.7 /usr/bin/python
-          
+        sudo rm -f /usr/bin/python
+        sudo ln -s /usr/bin/python2.7 /usr/bin/python
+
     - name: 下载Clang-aosp编译器
       run: |
         cd $GITHUB_WORKSPACE/kernel_workspace
@@ -61,10 +76,10 @@ jobs:
         wget https://raw.githubusercontent.com/ccc007ccc/kernel_xiaomi_sm8250/refs/heads/14.0-lmi/utils/runcpatch.sh
         chmod a+x runcpatch.sh
         if [ -f android-kernel/kernel/cgroup.c ]; then
-        ./runcpatch.sh android-kernel/kernel/cgroup.c               
+          ./runcpatch.sh android-kernel/kernel/cgroup.c               
         fi
         if [ -f android-kernel/kernel/cgroup/cgroup.c ]; then
-        ./runcpatch.sh android-kernel/kernel/cgroup/cgroup.c               
+          ./runcpatch.sh android-kernel/kernel/cgroup/cgroup.c               
         fi
 
     - name: test
@@ -72,8 +87,6 @@ jobs:
       run: |
         cd $GITHUB_WORKSPACE/kernel_workspace/android-kernel
 
-
-  
     - name: 配置 ksu
       if: env.ENABLE_KERNELSU == 'true'
       run: |
@@ -83,12 +96,12 @@ jobs:
     - name: 开启kvm
       if: env.ENABLE_KVM == 'true'
       run: |
-         cd $GITHUB_WORKSPACE/kernel_workspace
-         echo "CONFIG_VIRTUALIZATION=y" >> android-kernel/arch/arm64/configs/${{ env.KERNEL_CONFIG }}
-         echo "CONFIG_KVM=y" >> android-kernel/arch/arm64/configs/${{ env.KERNEL_CONFIG }}
-         echo "CONFIG_VHOST_NET=y" >> android-kernel/arch/arm64/configs/${{ env.KERNEL_CONFIG }}
-         echo "CONFIG_VHOST_CROSS_ENDIAN_LEGACY=y" >> android-kernel/arch/arm64/configs/${{ env.KERNEL_CONFIG }}
-                     
+        cd $GITHUB_WORKSPACE/kernel_workspace
+        echo "CONFIG_VIRTUALIZATION=y" >> android-kernel/arch/arm64/configs/${{ env.KERNEL_CONFIG }}
+        echo "CONFIG_KVM=y" >> android-kernel/arch/arm64/configs/${{ env.KERNEL_CONFIG }}
+        echo "CONFIG_VHOST_NET=y" >> android-kernel/arch/arm64/configs/${{ env.KERNEL_CONFIG }}
+        echo "CONFIG_VHOST_CROSS_ENDIAN_LEGACY=y" >> android-kernel/arch/arm64/configs/${{ env.KERNEL_CONFIG }}
+
     - name: 设置ccache缓存
       uses: hendrikmuhs/ccache-action@v1.2
       with:
@@ -102,11 +115,11 @@ jobs:
         export PATH=$GITHUB_WORKSPACE/kernel_workspace/clang-aosp/clang-r450784d/bin:$PATH
         make O=out ARCH=arm64 ${{ env.KERNEL_CONFIG }}
         if [ ${{env.LLVM_CONFIG}}=y ]; then
-        make -j$(nproc --all) CC="ccache clang" CXX=clang++ O=out ARCH=arm64 SUBARCH=arm64 CROSS_COMPILE="aarch64-linux-gnu-" CROSS_COMPILE_ARM32="arm-linux-gnueabi-" LLVM=1 LLVM_IAS=1
+          make -j$(nproc --all) CC="ccache clang" CXX=clang++ O=out ARCH=arm64 SUBARCH=arm64 CROSS_COMPILE="aarch64-linux-gnu-" CROSS_COMPILE_ARM32="arm-linux-gnueabi-" LLVM=1 LLVM_IAS=1
         else
-        make -j$(nproc --all) CC="ccache clang" CXX=clang++ O=out ARCH=arm64 SUBARCH=arm64 CROSS_COMPILE="aarch64-linux-gnu-" CROSS_COMPILE_ARM32="arm-linux-gnueabi-"
+          make -j$(nproc --all) CC="ccache clang" CXX=clang++ O=out ARCH=arm64 SUBARCH=arm64 CROSS_COMPILE="aarch64-linux-gnueabi-" CROSS_COMPILE_ARM32="arm-linux-gnueabi-"
         fi
-                
+
     - name: 准备打包内核
       run: |       
         cd $GITHUB_WORKSPACE/kernel_workspace
@@ -126,7 +139,7 @@ jobs:
         fi  
         rm -rf AnyKernel3/.git* AnyKernel3/README.md
         rm -rf AnyKernel3/ramdisk AnyKernel3/modules AnyKernel3/patch
-       
+
     - name: 上传内核
       uses: actions/upload-artifact@v3
       with:
@@ -139,4 +152,3 @@ jobs:
       with:
         name: dtbo-image
         path: kernel_workspace/android-kernel/out/arch/arm64/boot/dtbo.img
-          
