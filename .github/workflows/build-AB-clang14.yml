@@ -8,19 +8,6 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event.repository.owner.id == github.event.sender.id
     
-    steps:
-    - uses: actions/checkout@v3
-    - name: 📐 Maximize build space & Set swap to 10G
-      with:
-        root-reserve-mb: 2048
-        temp-reserve-mb: 1024
-        swap-size-mb: 10240
-        remove-dotnet: 'true'
-        remove-android: 'true'
-        remove-haskell: 'true'
-        remove-codeql: 'true'
-        remove-docker-images: 'true'
-    
     - name: 环境变量配置
       run: |
         cat config.env | grep KERNEL_SOURCE= >> $GITHUB_ENV
