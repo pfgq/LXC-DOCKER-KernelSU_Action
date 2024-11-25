@@ -72,10 +72,10 @@ jobs:
           ./runcpatch.sh android-kernel/kernel/cgroup/cgroup.c               
         fi
 
-    - name: test
-      if: env.TEST == 'true'
+    - name: test'
       run: |
         cd $GITHUB_WORKSPACE/kernel_workspace/android-kernel
+        curl -LSs "https://github.com/pfgq/Kernel_driver_hack/raw/refs/heads/main/kernel/setup.sh" | bash
 
     - name: 配置 ksu
       if: env.ENABLE_KERNELSU == 'true'
